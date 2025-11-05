@@ -1,0 +1,411 @@
+/* Enhanced Demo Details Styles */
+.enhanced-demo-details {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Section Headers */
+.detail-section {
+  margin-bottom: 40px;
+}
+
+.section-header {
+  margin-bottom: 25px;
+}
+
+.section-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 10px;
+}
+
+.section-subtitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 15px;
+}
+
+.title-underline {
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, #10b981, #059669);
+  border-radius: 2px;
+}
+
+/* Lead Text */
+.lead-text {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #475569;
+  margin-bottom: 20px;
+}
+
+/* Highlight Box */
+.highlight-box {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-left: 4px solid #10b981;
+  padding: 20px 25px;
+  border-radius: 8px;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #166534;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
+}
+
+/* Challenge Cards */
+.challenge-card {
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  height: 100%;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.challenge-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 0;
+  background: linear-gradient(180deg, #f59e0b, #d97706);
+  transition: height 0.3s ease;
+}
+
+.challenge-card:hover {
+  border-color: #f59e0b;
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.15);
+  transform: translateY(-5px);
+}
+
+.challenge-card:hover::before {
+  height: 100%;
+}
+
+.challenge-icon {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+  color: #d97706;
+}
+
+.challenge-card h6 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 10px;
+}
+
+.challenge-card p {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin-bottom: 0;
+  line-height: 1.6;
+}
+
+/* Solution Card */
+.solution-card {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.solution-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.solution-features li {
+  padding: 15px 0;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 1rem;
+  color: #475569;
+  line-height: 1.7;
+}
+
+.solution-features li:last-child {
+  border-bottom: none;
+}
+
+/* Flow Diagram */
+.diagram-card {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+}
+
+.flow-diagram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 30px 20px;
+}
+
+.flow-step {
+  text-align: center;
+  position: relative;
+}
+
+.step-circle {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  margin: 0 auto 15px;
+  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+}
+
+.step-content {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  min-width: 180px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.step-content:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.step-content h6 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.step-content p {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 0;
+}
+
+.flow-arrow {
+  font-size: 2rem;
+  color: #10b981;
+  font-weight: 700;
+}
+
+/* Dataset & Tech Lists */
+.dataset-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dataset-list li {
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+.tech-table {
+  font-size: 0.9rem;
+}
+
+.tech-table td {
+  vertical-align: middle;
+}
+
+/* Use Case Cards */
+.usecase-card {
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 25px;
+  height: 100%;
+  position: relative;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.usecase-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+  transition: width 0.3s ease;
+}
+
+.usecase-card:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.15);
+  transform: translateY(-5px);
+}
+
+.usecase-card:hover::before {
+  width: 100%;
+}
+
+.usecase-number {
+  width: 45px;
+  height: 45px;
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  color: #1e40af;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+}
+
+.usecase-card h6 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 10px;
+}
+
+.usecase-card p {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin-bottom: 0;
+  line-height: 1.6;
+}
+
+/* Value Cards */
+.value-props .value-card {
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 25px;
+  height: 100%;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.value-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+  background: linear-gradient(180deg, transparent, rgba(16, 185, 129, 0.05));
+  transition: height 0.3s ease;
+}
+
+.value-card:hover {
+  border-color: #10b981;
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
+  transform: translateY(-8px);
+}
+
+.value-card:hover::after {
+  height: 100%;
+}
+
+.value-icon {
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 2rem;
+  color: #059669;
+  position: relative;
+  z-index: 1;
+}
+
+.value-card h6 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.value-card p {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin-bottom: 0;
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
+}
+
+/* Integration Card */
+.integration-card {
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.integration-card .card-body {
+  padding: 30px;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+  .flow-diagram {
+    flex-direction: column;
+  }
+  
+  .flow-arrow {
+    transform: rotate(90deg);
+  }
+  
+  .section-title {
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .step-content {
+    min-width: 150px;
+    padding: 15px;
+  }
+  
+  .challenge-card,
+  .usecase-card,
+  .value-card {
+    padding: 20px;
+  }
+  
+  .section-title {
+    font-size: 1.3rem;
+  }
+}

@@ -1,0 +1,92 @@
+export const DEMO_CATEGORIES = {
+  COMPUTER_VISION: 'Computer Vision',
+  NLP: 'Natural Language Processing',
+  HEALTHCARE: 'Healthcare AI',
+  AGRICULTURE: 'Agricultural AI',
+  ANALYTICS: 'Business Analytics',
+  MANUFACTURING: 'Manufacturing',
+};
+
+export const DEMOS = [
+  {
+    id: 'vision-analytics',
+    icon: '📸',
+    title: 'Smart Vision Analytics',
+    description: 'Advanced computer vision system powered by deep learning for automated counting, quality assessment, and defect detection. Leverage state-of-the-art CNN models to achieve 99%+ accuracy in real-time object detection and classification.',
+    category: DEMO_CATEGORIES.COMPUTER_VISION,
+    technologies: ['TensorFlow', 'OpenCV', 'PyTorch', 'YOLO'],
+    features: ['Real-time Detection', 'Quality Control', 'Defect Analysis', 'Automated Counting'],
+  },
+  {
+    id: 'loyalty-assistant',
+    icon: '🤖',
+    title: 'Intelligent Loyalty Assistant',
+    description: 'AI-powered conversational agent with advanced NLP capabilities designed for customer loyalty programs. Features sentiment analysis, personalized recommendations, multi-language support, and seamless CRM integration.',
+    category: DEMO_CATEGORIES.NLP,
+    technologies: ['GPT-4', 'BERT', 'Dialogflow', 'Python'],
+    features: ['Sentiment Analysis', 'Personalization', 'Multi-language', 'CRM Integration'],
+  },
+  {
+    id: 'nursing-system',
+    icon: '🏥',
+    title: 'Automated Nursing System',
+    description: 'AI-powered healthcare management platform designed to streamline nursing workflows and patient care. Features automated patient monitoring, medication scheduling, vital signs tracking, and intelligent alert systems.',
+    category: DEMO_CATEGORIES.HEALTHCARE,
+    technologies: ['Machine Learning', 'IoT', 'Cloud Computing', 'React'],
+    features: ['Patient Monitoring', 'Medication Tracking', 'Alert System', 'Workflow Automation'],
+  },
+  {
+    id: 'crop-recommendation',
+    icon: '🌾',
+    title: 'Smart Crop Recommendation',
+    description: 'Advanced agricultural AI system that analyzes soil conditions, weather patterns, and regional data to recommend optimal crop selections. Helps farmers increase productivity by 25% through precision agriculture techniques.',
+    category: DEMO_CATEGORIES.AGRICULTURE,
+    technologies: ['Machine Learning', 'Data Analytics', 'Python', 'Scikit-learn'],
+    features: ['Soil Analysis', 'Weather Prediction', 'Yield Forecasting', 'Crop Selection'],
+  },
+  {
+    id: 'vegetation-index',
+    icon: '🛰️',
+    title: 'Vegetation Index Analytics',
+    description: 'Satellite-based vegetation monitoring system using remote sensing data and computer vision. Calculates NDVI, EVI, and other vegetation indices to assess crop health and monitor environmental changes.',
+    category: DEMO_CATEGORIES.AGRICULTURE,
+    technologies: ['Satellite Imagery', 'GIS', 'Remote Sensing', 'Python'],
+    features: ['NDVI Calculation', 'Crop Health', 'Deforestation Monitoring', 'Climate Research'],
+  },
+  {
+    id: 'bag-detection',
+    icon: '👜',
+    title: 'Bag Detection System',
+    description: 'Computer vision solution for automated product detection and quality control in manufacturing environments. Achieves 99.5% accuracy in real-time detection, reducing manual inspection time.',
+    category: DEMO_CATEGORIES.MANUFACTURING,
+    technologies: ['Deep Learning', 'Computer Vision', 'TensorFlow', 'OpenCV'],
+    features: ['Product Detection', 'Quality Control', 'Real-time Processing', 'Defect Identification'],
+  },
+  {
+    id: 'healthcare-intelligence',
+    icon: '🏥',
+    title: 'Healthcare Intelligence Platform',
+    description: 'Comprehensive AI system for medical data analysis utilizing machine learning algorithms for diagnostic support, patient risk assessment, and treatment optimization. HIPAA-compliant solution.',
+    category: DEMO_CATEGORIES.HEALTHCARE,
+    technologies: ['Machine Learning', 'Deep Learning', 'Python', 'Cloud'],
+    features: ['Diagnostic Support', 'Risk Assessment', 'Treatment Optimization', 'Predictive Analytics'],
+  },
+  {
+    id: 'predictive-maintenance',
+    icon: '⚙️',
+    title: 'Predictive Maintenance Engine',
+    description: 'Industrial IoT solution combining machine learning with sensor data analysis for predictive maintenance. Predicts equipment failures up to 30 days in advance, reducing downtime by 70%.',
+    category: DEMO_CATEGORIES.ANALYTICS,
+    technologies: ['IoT', 'Time Series Analysis', 'Machine Learning', 'Python'],
+    features: ['Failure Prediction', 'Anomaly Detection', 'Sensor Integration', 'Real-time Monitoring'],
+  },
+];
+
+export const APP_CONFIG = {
+  APP_NAME: 'AI Solutions Demo Central',
+  COMPANY_NAME: 'ThirdEye Data',
+  LOGO_URL: 'https://thirdeyedata.ai/wp-content/uploads/2023/06/ThirdEye-Data-Logo.png',
+  CONTACT_EMAIL: 'sales@thirdeyedata.ai',
+  CAPTCHA_LENGTH: 6,
+  SESSION_TIMEOUT: 30 * 60 * 1000, // 30 minutes
+};
