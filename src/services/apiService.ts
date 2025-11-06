@@ -3,18 +3,23 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { ApiError } from '../types';
 
 class ApiService {
+  downloadVegetationReport(session_id: string) {
+      throw new Error('Method not implemented.');
+  }
+  [x: string]: any;
   private api: AxiosInstance;
-  private readonly baseURL: string;
+  public readonly baseURL: string;
 
   constructor() {
-    this.baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+    this.baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
     
     this.api = axios.create({
       baseURL: this.baseURL,
-      timeout: 120000, // 2 minutes for satellite image processing
+      timeout: 120000,
       headers: {
         'Content-Type': 'application/json',
       },
+      withCredentials: false, // Set to false for public endpoints
     });
 
     this.setupInterceptors();
@@ -27,8 +32,6 @@ class ApiService {
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
           console.log('✅ Sending request with token:', token.substring(0, 30) + '...');
-        } else {
-          console.warn('⚠️ No token found for request to:', config.url);
         }
 
         const sessionId = this.getSessionId();
@@ -48,6 +51,7 @@ class ApiService {
       },
       (error) => {
         console.error('❌ API Error:', error.response?.status, error.config?.url);
+        console.error('❌ Error details:', error.response?.data);
         
         if (error.response?.status === 401) {
           console.warn('⚠️ Got 401 - Token may be invalid or expired');
@@ -94,16 +98,13 @@ class ApiService {
 
   // Authentication methods
   async login(email: string, password: string, captcha: string): Promise<any> {
-    const endpoint = import.meta.env.VITE_LOGIN_API_ENDPOINT || '/auth/login';
-    console.log('🔐 Login request to:', this.baseURL + endpoint);
-    const response = await this.api.post(endpoint, { email, password, captcha });
+    const response = await this.api.post('/api/auth/login', { email, password, captcha });
     return response.data;
   }
 
   async logout(): Promise<void> {
-    const endpoint = import.meta.env.VITE_LOGOUT_API_ENDPOINT || '/auth/logout';
     try {
-      await this.api.post(endpoint);
+      await this.api.post('/api/auth/logout');
     } finally {
       this.clearAuth();
     }
@@ -111,9 +112,8 @@ class ApiService {
 
   // Crop Prediction method
   async predictCrop(data: any): Promise<any> {
-    const endpoint = import.meta.env.VITE_CROP_PREDICT_API_ENDPOINT || '/crop/predict';
-    console.log('🌾 Predict request to:', this.baseURL + endpoint);
-    const response = await this.api.post(endpoint, data);
+    console.log('🌾 Predict request');
+    const response = await this.api.post('/api/crop/predict', data);
     return response.data;
   }
 
@@ -124,7 +124,7 @@ class ApiService {
     formData.append('confidence_threshold', confidenceThreshold.toString());
 
     console.log('📦 Bag detection request');
-    const response = await this.api.post('/bag-detection/detect/public', formData, {
+    const response = await this.api.post('/api/bag-detection/detect/public', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
       timeout: 60000,
     });
@@ -151,47 +151,85 @@ class ApiService {
     }
 
     console.log('🛰️ Vegetation analysis request');
-    console.log('📸 RGB file:', rgbFile.name);
-    console.log('📸 SWIR file:', swirFile.name);
-    console.log('📸 NIR file:', nirFile.name);
-    console.log('📅 Date:', acquisitionDate);
-    console.log('📍 Location:', location || 'Not specified');
+    console.log('📸 Files:', {
+      rgb: rgbFile.name,
+      swir: swirFile.name,
+      nir: nirFile.name,
+      date: acquisitionDate,
+      location: location || 'Not specified'
+    });
 
-    const response = await this.api.post('/vegetation/analyze', formData, {
+    const response = await this.api.post('/api/vegetation/analyze', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
-      timeout: 120000, // 2 minutes for processing
+      timeout: 120000,
     });
     
     console.log('✅ Analysis response:', response.data);
     return response.data;
   }
 
-  // Get vegetation plot image
-  async getVegetationPlot(sessionId: string, plotType: string): Promise<string> {
-    const url = `/vegetation/plot/${sessionId}/${plotType}.png`;
-    console.log('📊 Fetching plot:', url);
-    return this.baseURL + url;
+  // Get full plot URL (for images)
+  getPlotUrl(plotPath: string): string {
+    // plotPath comes like: /api/vegetation/plot/20251106_122717/NDVI.png
+    const url = `${this.baseURL}${plotPath}`;
+    console.log('📊 Plot URL:', url);
+    return url;
   }
 
-  // Generate vegetation report
-  async generateVegetationReport(reportData: any): Promise<any> {
-    console.log('📄 Generating vegetation report:', reportData);
+  // Generate and Download vegetation report (combined operation)
+  async generateAndDownloadVegetationReport(reportData: any): Promise<void> {
+    console.log('📄 Generating and downloading report:', reportData);
     
-    const response = await this.api.post('/vegetation/report/generate', reportData, {
-      timeout: 60000,
-    });
-    
-    console.log('✅ Report generated:', response.data);
-    return response.data;
-  }
-
-  // Download vegetation report (returns blob)
-  async downloadVegetationReport(sessionId: string): Promise<Blob> {
-    const response = await this.api.get(`/vegetation/report/download/${sessionId}`, {
-      responseType: 'blob',
-    });
-    
-    return response.data;
+    try {
+      // Make request to generate and receive PDF directly
+      const response = await this.api.post('/api/vegetation/report/generate', reportData, {
+        responseType: 'blob',
+        timeout: 60000,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      console.log('✅ Report blob received:', response.data.size, 'bytes');
+      
+      // Check if response is actually a blob (PDF)
+      if (response.data.type === 'application/pdf') {
+        // Create download link
+        const blob = new Blob([response.data], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Vegetation_Report_${reportData.session_id}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        
+        // Cleanup
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
+        console.log('✅ Report downloaded successfully');
+      } else {
+        // Response might be JSON error
+        const text = await response.data.text();
+        const error = JSON.parse(text);
+        throw new Error(error.error || 'Failed to generate report');
+      }
+    } catch (error: any) {
+      console.error('❌ Report generation error:', error);
+      
+      // If error response is a blob, parse it
+      if (error.response?.data instanceof Blob) {
+        const text = await error.response.data.text();
+        try {
+          const errorData = JSON.parse(text);
+          throw new Error(errorData.error || 'Failed to generate report');
+        } catch (parseError) {
+          throw new Error(text || 'Failed to generate report');
+        }
+      }
+      
+      throw error;
+    }
   }
 
   // Generic methods
