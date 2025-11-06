@@ -873,9 +873,7 @@ const CropRecommendationApp: React.FC = () => {
                         </div>
                         <h3 className="result-title">Recommended Crop</h3>
                         <h2 className="result-crop">{result.crop}</h2>
-                        <div className="confidence-badge">
-                          Confidence: {(result.confidence * 100).toFixed(2)}%
-                        </div>
+                       
                         
                         <div className="parameters-used mt-4">
                           <h6 className="mb-3">
