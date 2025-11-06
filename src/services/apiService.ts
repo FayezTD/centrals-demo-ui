@@ -11,7 +11,7 @@ class ApiService {
     
     this.api = axios.create({
       baseURL: this.baseURL,
-      timeout: 30000,
+      timeout: 60000,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -21,15 +21,14 @@ class ApiService {
   }
 
   private setupInterceptors(): void {
-    // Request interceptor
     this.api.interceptors.request.use(
       (config) => {
         const token = this.getToken();
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
-          console.log('✅ Sending request with token:', token.substring(0, 30) + '...'); // Debug
+          console.log('✅ Sending request with token:', token.substring(0, 30) + '...');
         } else {
-          console.warn('⚠️ No token found for request to:', config.url); // Debug
+          console.warn('⚠️ No token found for request to:', config.url);
         }
 
         const sessionId = this.getSessionId();
@@ -44,20 +43,16 @@ class ApiService {
       }
     );
 
-    // Response interceptor
     this.api.interceptors.response.use(
       (response) => {
-        console.log('✅ API Response:', response.status, response.config.url); // Debug
+        console.log('✅ API Response:', response.status, response.config.url);
         return response;
       },
       (error) => {
-        console.error('❌ API Error:', error.response?.status, error.config?.url); // Debug
+        console.error('❌ API Error:', error.response?.status, error.config?.url);
         
-        // IMPORTANT: Don't auto-redirect on 401, let components handle it
-        // Only clear auth silently, don't redirect automatically
         if (error.response?.status === 401) {
           console.warn('⚠️ Got 401 - Token may be invalid or expired');
-          // Don't redirect here - let the component handle it
         }
         
         return Promise.reject(this.handleError(error));
@@ -102,7 +97,7 @@ class ApiService {
   // Authentication methods
   async login(email: string, password: string, captcha: string): Promise<any> {
     const endpoint = import.meta.env.VITE_LOGIN_API_ENDPOINT || '/auth/login';
-    console.log('🔐 Login request to:', this.baseURL + endpoint); // Debug
+    console.log('🔐 Login request to:', this.baseURL + endpoint);
     const response = await this.api.post(endpoint, { email, password, captcha });
     return response.data;
   }
@@ -133,10 +128,36 @@ class ApiService {
     rainfall: number;
   }): Promise<any> {
     const endpoint = import.meta.env.VITE_CROP_PREDICT_API_ENDPOINT || '/crop/predict';
-    console.log('🌾 Predict request to:', this.baseURL + endpoint); // Debug
+    console.log('🌾 Predict request to:', this.baseURL + endpoint);
     const token = this.getToken();
-    console.log('🔑 Using token:', token ? token.substring(0, 30) + '...' : 'NO TOKEN'); // Debug
+    console.log('🔑 Using token:', token ? token.substring(0, 30) + '...' : 'NO TOKEN');
     const response = await this.api.post(endpoint, data);
+    return response.data;
+  }
+
+  // Bag Detection - FIXED to match backend expectations
+  async detectBags(imageFile: File, confidenceThreshold: number = 0.3): Promise<any> {
+    const formData = new FormData();
+    
+    // Backend expects 'file' as the key (from your Python code: request.files['file'])
+    formData.append('file', imageFile, imageFile.name);
+    
+    // Optional: add confidence threshold if backend supports it
+    formData.append('confidence_threshold', confidenceThreshold.toString());
+
+    console.log('📦 Bag detection request');
+    console.log('📸 Image file:', imageFile.name, 'Size:', imageFile.size, 'Type:', imageFile.type);
+    console.log('🎯 Confidence threshold:', confidenceThreshold);
+
+    const response = await this.api.post('/bag-detection/detect/public', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      // Don't set timeout too low for image upload
+      timeout: 60000,
+    });
+    
+    console.log('✅ Detection response received:', response.data);
     return response.data;
   }
 

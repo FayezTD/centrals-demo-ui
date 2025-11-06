@@ -86,3 +86,45 @@ export interface ApiError {
   code?: string;
   details?: any;
 }
+
+// Bag Detection Types
+export interface BagDetectionRequest {
+  image: File;
+  confidence_threshold?: number;
+}
+
+export interface BagDetectionBBox {
+  x1: number;
+  x2: number;
+  y1: number;
+  y2: number;
+}
+
+export interface BagDetectionCenter {
+  x: number;
+  y: number;
+}
+
+export interface BagDetection {
+  id: number;
+  class: string;
+  original_class: string;
+  confidence: number;
+  bbox: BagDetectionBBox;
+  center: BagDetectionCenter;
+  area: number;
+}
+
+export interface BagDetectionResponse {
+  success: boolean;
+  message: string;
+  data: {
+    annotated_image: string;
+    detections: BagDetection[];
+    categories: Record<string, number>;
+    total_count: number;
+    confidence_threshold: number;
+    model_used: string;
+    timestamp: string;
+  };
+}

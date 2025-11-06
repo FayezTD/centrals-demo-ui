@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // /* eslint-disable react-hooks/exhaustive-deps */
 // /* eslint-disable @typescript-eslint/no-explicit-any */
 // import React, { useState, useEffect } from 'react';
@@ -393,15 +394,34 @@ const DemoDetail: React.FC = () => {
   };
 
   const handleLaunchDemo = () => {
-    if (!demo) return;
+    if (!demo) {
+      console.error('❌ No demo object found');
+      return;
+    }
 
+    console.log('🚀 Launching demo:', demo.id);
+    
     // Navigate to the demo app based on demo ID
     switch (demo.id) {
       case 'crop-recommendation':
+        console.log('➡️ Navigating to crop recommendation app');
         navigate('/demo-app/crop-recommendation');
         break;
+      case 'bag-detection':
+        console.log('➡️ Navigating to bag detection app');
+        navigate('/demo-app/bag-detection');
+        break;
       // Add more cases for other demos
+      case 'loyalty-assistant':
+      case 'nursing-system':
+      case 'vision-analytics':
+      case 'vegetation-index':
+      case 'healthcare-intelligence':
+      case 'predictive-maintenance':
+        alert(`Demo app for "${demo.title}" is under development. Coming soon!`);
+        break;
       default:
+        console.warn('⚠️ Unknown demo ID:', demo.id);
         alert(`Demo app for "${demo.title}" is under development.`);
     }
   };
@@ -455,7 +475,6 @@ const DemoDetail: React.FC = () => {
     <div className="demo-detail-page">
       <Header />
       
-      {/* Hero Section with Better Padding */}
       <div className="demo-detail-hero py-5">
         <Container>
           <Row className="align-items-center g-4">
@@ -496,7 +515,6 @@ const DemoDetail: React.FC = () => {
         </Container>
       </div>
 
-      {/* Content with Better Padding */}
       <Container className="demo-detail-content py-5">
         <Row className="mb-5">
           <Col lg={12}>
@@ -614,7 +632,6 @@ const DemoDetail: React.FC = () => {
           </Col>
         </Row>
 
-        {/* CTA Section with Better Spacing */}
         <Row className="mt-5 mb-5">
           <Col className="text-center">
             <div className="action-cta p-5">

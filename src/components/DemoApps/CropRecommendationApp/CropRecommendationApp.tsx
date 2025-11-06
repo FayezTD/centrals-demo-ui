@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // import React, { useState } from 'react';
 // import { Container, Row, Col, Form, Button, Card, Alert, Spinner } from 'react-bootstrap';
 // import { useNavigate } from 'react-router-dom';
@@ -458,7 +459,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext';
 import apiService from '../../../services/apiService';
 import { CropPredictionResponse } from '../../../types';
-import './cropRecommendationApp.css';
+import './CropRecommendationApp.css';
 
 const CropRecommendationApp: React.FC = () => {
   const navigate = useNavigate();

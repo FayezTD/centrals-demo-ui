@@ -47,14 +47,17 @@ import ProtectedRoute from './components/Layout/ProtectedRoute';
 
 // Import Demo Apps
 import CropRecommendationApp from './components/DemoApps/CropRecommendationApp/CropRecommendationApp';
+import BagDetectionApp from './components/DemoApps/BagDetectionApp/BagDetectionApp';
 
 function App() {
   return (
     <AuthProvider>
       <Router>
         <Routes>
+          {/* Public Route */}
           <Route path="/login" element={<Login />} />
           
+          {/* Protected Routes */}
           <Route
             path="/dashboard"
             element={
@@ -73,7 +76,7 @@ function App() {
             }
           />
           
-          {/* Demo App Routes */}
+          {/* Demo App Routes - Protected */}
           <Route
             path="/demo-app/crop-recommendation"
             element={
@@ -83,6 +86,16 @@ function App() {
             }
           />
           
+          <Route
+            path="/demo-app/bag-detection"
+            element={
+              <ProtectedRoute>
+                <BagDetectionApp />
+              </ProtectedRoute>
+            }
+          />
+          
+          {/* Redirects */}
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
