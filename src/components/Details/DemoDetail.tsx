@@ -357,6 +357,7 @@ import VisionAnalyticsDetails from './VisionAnalyticsDetails';
 import VegetationIndexDetails from './VegetationIndexDetails';
 import GenericDemoDetails from './GenericDemoDetails';
 import LoadingSpinner from '../Common/LoadingSpinner';
+// import './DemoDetail.css';
 
 const DemoDetail: React.FC = () => {
   const { demoId } = useParams<{ demoId: string }>();
@@ -411,11 +412,14 @@ const DemoDetail: React.FC = () => {
         console.log('➡️ Navigating to bag detection app');
         navigate('/demo-app/bag-detection');
         break;
+      case 'vegetation-index':
+        console.log('➡️ Navigating to vegetation analysis app');
+        navigate('/demo-app/vegetation-analysis');
+        break;
       // Add more cases for other demos
       case 'loyalty-assistant':
       case 'nursing-system':
       case 'vision-analytics':
-      case 'vegetation-index':
       case 'healthcare-intelligence':
       case 'predictive-maintenance':
         alert(`Demo app for "${demo.title}" is under development. Coming soon!`);

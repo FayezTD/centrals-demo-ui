@@ -1,0 +1,340 @@
+/* Vegetation Analysis App Styles */
+.vegetation-analysis-app {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  font-family: 'Inter', sans-serif;
+}
+
+/* Header */
+.app-header {
+  background: rgba(255, 255, 255, 0.98);
+  padding: 20px 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.app-logo {
+  max-height: 50px;
+}
+
+.app-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 5px;
+}
+
+.veg-icon {
+  font-size: 2rem;
+  margin-right: 10px;
+}
+
+.app-subtitle {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin-bottom: 0;
+}
+
+/* Main Content */
+.app-content {
+  padding: 40px 20px;
+  min-height: calc(100vh - 160px);
+}
+
+.main-card {
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  background: white;
+}
+
+/* Banner */
+.app-banner {
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  padding: 20px 30px;
+  border-radius: 12px;
+  border: 2px solid #86efac;
+}
+
+.app-banner h5 {
+  color: #15803d;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.app-banner p {
+  color: #166534;
+  line-height: 1.6;
+}
+
+/* Custom Tabs */
+.custom-tabs {
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.custom-tabs .nav-link {
+  color: #64748b;
+  font-weight: 600;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 12px 24px;
+  transition: all 0.3s ease;
+}
+
+.custom-tabs .nav-link:hover {
+  color: #16a34a;
+  background: #f8fafc;
+}
+
+.custom-tabs .nav-link.active {
+  color: #16a34a;
+  background: transparent;
+  border-bottom: 3px solid #16a34a;
+}
+
+.custom-tabs .nav-link:disabled {
+  color: #cbd5e1;
+  cursor: not-allowed;
+}
+
+/* Tab Content */
+.tab-content-wrapper {
+  min-height: 400px;
+}
+
+/* File Upload Areas */
+.file-upload-area {
+  border: 3px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #f8fafc;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.file-upload-area:hover {
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
+
+.file-placeholder i {
+  color: #16a34a;
+}
+
+.file-placeholder p {
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 5px;
+}
+
+.file-selected {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* Parameters Card */
+.parameters-card {
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.1);
+}
+
+.parameters-card h6 {
+  color: #15803d;
+  font-weight: 700;
+  border-bottom: 2px solid #bbf7d0;
+  padding-bottom: 10px;
+}
+
+.parameters-card .form-label {
+  font-weight: 600;
+  color: #166534;
+  font-size: 0.9rem;
+}
+
+.parameters-card .form-control {
+  border: 2px solid #d1fae5;
+  border-radius: 8px;
+}
+
+.parameters-card .form-control:focus {
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+}
+
+/* Results Header */
+.results-header {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  padding: 20px;
+  border-radius: 12px;
+  border: 2px solid #86efac;
+}
+
+.results-header h5 {
+  color: #15803d;
+  font-weight: 700;
+}
+
+/* Index Stat Cards */
+.index-stat-card {
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.index-stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  border-color: #16a34a;
+}
+
+.index-stat-card h6 {
+  color: #1e293b;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.index-stat-card .table {
+  font-size: 0.9rem;
+}
+
+.index-stat-card .table td {
+  padding: 6px 10px;
+  border-color: #f1f5f9;
+}
+
+.index-stat-card .table strong {
+  color: #64748b;
+}
+
+/* Info Card */
+.info-card {
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.info-card h6 {
+  color: #1e293b;
+  font-weight: 700;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 10px;
+}
+
+.info-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.info-list li {
+  padding: 10px 0;
+  padding-left: 25px;
+  position: relative;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.info-list li:before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #16a34a;
+  font-weight: bold;
+}
+
+/* Buttons */
+.btn-success {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  border: none;
+  font-weight: 700;
+  padding: 12px 24px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-success:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(22, 163, 74, 0.4);
+  background: linear-gradient(135deg, #15803d 0%, #14532d 100%);
+}
+
+.btn-success:disabled {
+  opacity: 0.6;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+  border: none;
+  font-weight: 700;
+  padding: 12px 24px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+}
+
+/* Footer */
+.app-footer {
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 25px 0;
+  margin-top: 40px;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+  .app-title {
+    font-size: 1.5rem;
+  }
+
+  .tab-content-wrapper {
+    padding: 20px 15px !important;
+  }
+
+  .file-upload-area {
+    padding: 20px;
+    min-height: 100px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-content {
+    padding: 20px 15px;
+  }
+
+  .custom-tabs .nav-link {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+
+  .app-banner {
+    padding: 15px 20px;
+  }
+
+  .file-upload-area {
+    padding: 15px;
+  }
+
+  .parameters-card {
+    margin-top: 20px;
+  }
+}

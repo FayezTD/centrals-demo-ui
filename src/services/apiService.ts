@@ -11,7 +11,7 @@ class ApiService {
     
     this.api = axios.create({
       baseURL: this.baseURL,
-      timeout: 60000,
+      timeout: 120000, // 2 minutes for satellite image processing
       headers: {
         'Content-Type': 'application/json',
       },
@@ -38,9 +38,7 @@ class ApiService {
 
         return config;
       },
-      (error) => {
-        return Promise.reject(error);
-      }
+      (error) => Promise.reject(error)
     );
 
     this.api.interceptors.response.use(
@@ -111,66 +109,88 @@ class ApiService {
     }
   }
 
-  async checkSession(): Promise<any> {
-    const endpoint = import.meta.env.VITE_SESSION_CHECK_API_ENDPOINT || '/auth/session';
-    const response = await this.api.get(endpoint);
-    return response.data;
-  }
-
   // Crop Prediction method
-  async predictCrop(data: {
-    N: number;
-    P: number;
-    K: number;
-    temperature: number;
-    humidity: number;
-    ph: number;
-    rainfall: number;
-  }): Promise<any> {
+  async predictCrop(data: any): Promise<any> {
     const endpoint = import.meta.env.VITE_CROP_PREDICT_API_ENDPOINT || '/crop/predict';
     console.log('🌾 Predict request to:', this.baseURL + endpoint);
-    const token = this.getToken();
-    console.log('🔑 Using token:', token ? token.substring(0, 30) + '...' : 'NO TOKEN');
     const response = await this.api.post(endpoint, data);
     return response.data;
   }
 
-  // Bag Detection - FIXED to match backend expectations
+  // Bag Detection
   async detectBags(imageFile: File, confidenceThreshold: number = 0.3): Promise<any> {
     const formData = new FormData();
-    
-    // Backend expects 'file' as the key (from your Python code: request.files['file'])
     formData.append('file', imageFile, imageFile.name);
-    
-    // Optional: add confidence threshold if backend supports it
     formData.append('confidence_threshold', confidenceThreshold.toString());
 
     console.log('📦 Bag detection request');
-    console.log('📸 Image file:', imageFile.name, 'Size:', imageFile.size, 'Type:', imageFile.type);
-    console.log('🎯 Confidence threshold:', confidenceThreshold);
-
     const response = await this.api.post('/bag-detection/detect/public', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-      // Don't set timeout too low for image upload
+      headers: { 'Content-Type': 'multipart/form-data' },
       timeout: 60000,
     });
     
-    console.log('✅ Detection response received:', response.data);
     return response.data;
   }
 
-  // Demo methods
-  async getDemoDetails(demoId: string): Promise<any> {
-    const endpoint = import.meta.env.VITE_DEMO_DETAILS_API_ENDPOINT || '/demos';
-    const response = await this.api.get(`${endpoint}/${demoId}`);
+  // Vegetation Index Analysis
+  async analyzeVegetation(
+    rgbFile: File,
+    swirFile: File,
+    nirFile: File,
+    acquisitionDate: string,
+    location?: string
+  ): Promise<any> {
+    const formData = new FormData();
+    formData.append('rgb_file', rgbFile, rgbFile.name);
+    formData.append('swir_file', swirFile, swirFile.name);
+    formData.append('nir_file', nirFile, nirFile.name);
+    formData.append('acquisition_date', acquisitionDate);
+    
+    if (location) {
+      formData.append('location', location);
+    }
+
+    console.log('🛰️ Vegetation analysis request');
+    console.log('📸 RGB file:', rgbFile.name);
+    console.log('📸 SWIR file:', swirFile.name);
+    console.log('📸 NIR file:', nirFile.name);
+    console.log('📅 Date:', acquisitionDate);
+    console.log('📍 Location:', location || 'Not specified');
+
+    const response = await this.api.post('/vegetation/analyze', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 120000, // 2 minutes for processing
+    });
+    
+    console.log('✅ Analysis response:', response.data);
     return response.data;
   }
 
-  async getLaunchDemoUrl(demoId: string): Promise<any> {
-    const endpoint = import.meta.env.VITE_DEMO_DETAILS_API_ENDPOINT || '/demos';
-    const response = await this.api.get(`${endpoint}/${demoId}/launch`);
+  // Get vegetation plot image
+  async getVegetationPlot(sessionId: string, plotType: string): Promise<string> {
+    const url = `/vegetation/plot/${sessionId}/${plotType}.png`;
+    console.log('📊 Fetching plot:', url);
+    return this.baseURL + url;
+  }
+
+  // Generate vegetation report
+  async generateVegetationReport(reportData: any): Promise<any> {
+    console.log('📄 Generating vegetation report:', reportData);
+    
+    const response = await this.api.post('/vegetation/report/generate', reportData, {
+      timeout: 60000,
+    });
+    
+    console.log('✅ Report generated:', response.data);
+    return response.data;
+  }
+
+  // Download vegetation report (returns blob)
+  async downloadVegetationReport(sessionId: string): Promise<Blob> {
+    const response = await this.api.get(`/vegetation/report/download/${sessionId}`, {
+      responseType: 'blob',
+    });
+    
     return response.data;
   }
 

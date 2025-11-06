@@ -48,6 +48,7 @@ import ProtectedRoute from './components/Layout/ProtectedRoute';
 // Import Demo Apps
 import CropRecommendationApp from './components/DemoApps/CropRecommendationApp/CropRecommendationApp';
 import BagDetectionApp from './components/DemoApps/BagDetectionApp/BagDetectionApp';
+import VegetationAnalysisApp from './components/DemoApps/VegetationAnalysisApp/VegetationAnalysisApp';
 
 function App() {
   return (
@@ -91,6 +92,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <BagDetectionApp />
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route
+            path="/demo-app/vegetation-analysis"
+            element={
+              <ProtectedRoute>
+                <VegetationAnalysisApp />
               </ProtectedRoute>
             }
           />

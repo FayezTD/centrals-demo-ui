@@ -128,3 +128,69 @@ export interface BagDetectionResponse {
     timestamp: string;
   };
 }
+
+// Vegetation Index Analysis Types
+export interface VegetationAnalysisRequest {
+  rgb_file: File;
+  swir_file: File;
+  nir_file: File;
+  acquisition_date: string;
+  location?: string;
+}
+
+export interface VegetationIndex {
+  max: number;
+  mean: number;
+  min: number;
+  std: number;
+}
+
+export interface VegetationIndices {
+  NDVI: VegetationIndex;
+  NDMI: VegetationIndex;
+  NDWI: VegetationIndex;
+  MSAVI: VegetationIndex;
+  CWSI: VegetationIndex;
+  EVI: VegetationIndex;
+}
+
+export interface VegetationPlots {
+  NDVI: string;
+  NDMI: string;
+  NDWI: string;
+  MSAVI: string;
+  CWSI: string;
+  EVI: string;
+  overview: string;
+}
+
+export interface VegetationAnalysisResponse {
+  success: boolean;
+  message: string;
+  data: {
+    session_id: string;
+    acquisition_date: string;
+    location: string;
+    indices_calculated: string[];
+    indices: VegetationIndices;
+    plots: VegetationPlots;
+  };
+}
+
+export interface VegetationReportRequest {
+  session_id: string;
+  report_title: string;
+  farmer_name: string;
+  field_size?: string;
+  crop_type?: string;
+  additional_notes?: string;
+}
+
+export interface VegetationReportResponse {
+  success: boolean;
+  message: string;
+  data: {
+    report_url: string;
+    download_url: string;
+  };
+}
