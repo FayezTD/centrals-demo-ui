@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useRef } from 'react';
 import { Container, Row, Col, Form, Button, Card, Alert, Spinner, Badge, Table, Tabs, Tab } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -26,7 +26,6 @@ const VegetationAnalysisApp: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const [activeTab, setActiveTab] = useState('upload');
   
   // Report form data
@@ -41,6 +40,7 @@ const VegetationAnalysisApp: React.FC = () => {
     if (file) {
       console.log(`📁 ${type.toUpperCase()} file selected:`, file.name);
       
+      // Validate file type (TIFF files)
       const validExtensions = ['.tif', '.tiff', '.TIF', '.TIFF'];
       const isValid = validExtensions.some(ext => file.name.toLowerCase().endsWith(ext.toLowerCase()));
       
@@ -49,8 +49,8 @@ const VegetationAnalysisApp: React.FC = () => {
         return;
       }
       
-      if (file.size > 50 * 1024 * 1024) {
-        setError('File size should be less than 50MB');
+      if (file.size > 100 * 1024 * 1024) { // 100MB limit
+        setError('File size should be less than 100MB');
         return;
       }
 
@@ -75,7 +75,6 @@ const VegetationAnalysisApp: React.FC = () => {
 
     setIsProcessing(true);
     setError('');
-    setSuccess('');
     setResult(null);
 
     try {
@@ -94,7 +93,6 @@ const VegetationAnalysisApp: React.FC = () => {
       if (response.success && response.data) {
         setResult(response.data);
         setActiveTab('results');
-        setSuccess('Analysis completed successfully!');
       } else {
         setError(response.message || 'Analysis failed');
       }
@@ -114,7 +112,6 @@ const VegetationAnalysisApp: React.FC = () => {
 
     setIsGeneratingReport(true);
     setError('');
-    setSuccess('');
 
     try {
       console.log('📄 Generating report...');
@@ -129,33 +126,26 @@ const VegetationAnalysisApp: React.FC = () => {
       };
 
       const reportResponse = await apiService.generateVegetationReport(reportData);
-      console.log('📄 Report response:', reportResponse);
 
       if (reportResponse.success) {
-        console.log('📥 Downloading report...');
-        
-        // Download the report blob
+        // Download the report
         const blob = await apiService.downloadVegetationReport(result.session_id);
-        
-        // Create download link
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         a.download = `vegetation_report_${result.session_id}.pdf`;
         document.body.appendChild(a);
         a.click();
-        
-        // Cleanup
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
         
-        setSuccess('Report generated and downloaded successfully!');
+ Alert( { variant: 'success', children: 'Report generated and downloaded successfully!' });
       } else {
-        setError(reportResponse.message || 'Failed to generate report');
+        setError('Failed to generate report');
       }
     } catch (err: any) {
       console.error('❌ Report generation error:', err);
-      setError(err.message || 'Failed to generate report. Please try again.');
+      setError(err.message || 'Failed to generate report.');
     } finally {
       setIsGeneratingReport(false);
     }
@@ -169,7 +159,6 @@ const VegetationAnalysisApp: React.FC = () => {
     setLocation('');
     setResult(null);
     setError('');
-    setSuccess('');
     setActiveTab('upload');
     
     if (rgbInputRef.current) rgbInputRef.current.value = '';
@@ -277,13 +266,6 @@ const VegetationAnalysisApp: React.FC = () => {
                   </Alert>
                 )}
 
-                {success && (
-                  <Alert variant="success" dismissible onClose={() => setSuccess('')}>
-                    <i className="fas fa-check-circle me-2"></i>
-                    <strong>Success:</strong> {success}
-                  </Alert>
-                )}
-
                 <Tabs activeKey={activeTab} onSelect={(k) => k && setActiveTab(k)} className="mb-4 custom-tabs">
                   {/* Tab 1: Upload & Process */}
                   <Tab eventKey="upload" title={<><i className="fas fa-cloud-upload-alt me-2"></i>Upload & Process Images</>}>
@@ -318,7 +300,7 @@ const VegetationAnalysisApp: React.FC = () => {
                                 <div className="file-placeholder">
                                   <i className="fas fa-cloud-upload-alt fa-2x mb-2"></i>
                                   <p className="mb-1">Click to upload RGB image</p>
-                                  <small className="text-muted">TIFF format • Max 50MB</small>
+                                  <small className="text-muted">TIFF format • Max 100MB</small>
                                 </div>
                               )}
                               <input
@@ -350,7 +332,7 @@ const VegetationAnalysisApp: React.FC = () => {
                                 <div className="file-placeholder">
                                   <i className="fas fa-cloud-upload-alt fa-2x mb-2"></i>
                                   <p className="mb-1">Click to upload SWIR image</p>
-                                  <small className="text-muted">TIFF format • Max 50MB</small>
+                                  <small className="text-muted">TIFF format • Max 100MB</small>
                                 </div>
                               )}
                               <input
@@ -382,7 +364,7 @@ const VegetationAnalysisApp: React.FC = () => {
                                 <div className="file-placeholder">
                                   <i className="fas fa-cloud-upload-alt fa-2x mb-2"></i>
                                   <p className="mb-1">Click to upload NIR image</p>
-                                  <small className="text-muted">TIFF format • Max 50MB</small>
+                                  <small className="text-muted">TIFF format • Max 100MB</small>
                                 </div>
                               )}
                               <input
@@ -499,14 +481,10 @@ const VegetationAnalysisApp: React.FC = () => {
                             </Card.Header>
                             <Card.Body className="p-2">
                               <img
-                                src={apiService.getPlotUrl(result.plots.overview)}
+                                src={`${apiService['baseURL']}${result.plots.overview}`}
                                 alt="All Vegetation Indices"
                                 className="w-100"
                                 style={{ maxHeight: '600px', objectFit: 'contain' }}
-                                onError={(e) => {
-                                  console.error('Failed to load overview image');
-                                  e.currentTarget.style.display = 'none';
-                                }}
                               />
                             </Card.Body>
                           </Card>
@@ -536,13 +514,9 @@ const VegetationAnalysisApp: React.FC = () => {
                                   </Card.Header>
                                   <Card.Body className="p-2">
                                     <img
-                                      src={apiService.getPlotUrl(result.plots[indexName as keyof typeof result.plots])}
+                                      src={`${apiService['baseURL']}${result.plots[indexName as keyof typeof result.plots]}`}
                                       alt={`${indexName} Plot`}
                                       className="w-100"
-                                      onError={(e) => {
-                                        console.error(`Failed to load ${indexName} image`);
-                                        e.currentTarget.alt = `Failed to load ${indexName} plot`;
-                                      }}
                                     />
                                   </Card.Body>
                                 </Card>
