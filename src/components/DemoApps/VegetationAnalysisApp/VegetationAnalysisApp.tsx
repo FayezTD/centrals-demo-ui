@@ -49,8 +49,8 @@ const VegetationAnalysisApp: React.FC = () => {
         return;
       }
       
-      if (file.size > 50 * 1024 * 1024) { // 50MB limit
-        setError('File size should be less than 50MB');
+      if (file.size > 100 * 1024 * 1024) { // 100MB limit
+        setError('File size should be less than 100MB');
         return;
       }
 
@@ -300,7 +300,7 @@ const VegetationAnalysisApp: React.FC = () => {
                                 <div className="file-placeholder">
                                   <i className="fas fa-cloud-upload-alt fa-2x mb-2"></i>
                                   <p className="mb-1">Click to upload RGB image</p>
-                                  <small className="text-muted">TIFF format • Max 50MB</small>
+                                  <small className="text-muted">TIFF format • Max 100MB</small>
                                 </div>
                               )}
                               <input
@@ -332,7 +332,7 @@ const VegetationAnalysisApp: React.FC = () => {
                                 <div className="file-placeholder">
                                   <i className="fas fa-cloud-upload-alt fa-2x mb-2"></i>
                                   <p className="mb-1">Click to upload SWIR image</p>
-                                  <small className="text-muted">TIFF format • Max 50MB</small>
+                                  <small className="text-muted">TIFF format • Max 100MB</small>
                                 </div>
                               )}
                               <input
@@ -364,7 +364,7 @@ const VegetationAnalysisApp: React.FC = () => {
                                 <div className="file-placeholder">
                                   <i className="fas fa-cloud-upload-alt fa-2x mb-2"></i>
                                   <p className="mb-1">Click to upload NIR image</p>
-                                  <small className="text-muted">TIFF format • Max 50MB</small>
+                                  <small className="text-muted">TIFF format • Max 100MB</small>
                                 </div>
                               )}
                               <input
