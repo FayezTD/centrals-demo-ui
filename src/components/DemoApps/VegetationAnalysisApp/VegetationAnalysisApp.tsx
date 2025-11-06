@@ -39,7 +39,11 @@ const VegetationAnalysisApp: React.FC = () => {
     const file = e.target.files?.[0];
     if (file) {
       console.log(`📁 ${type.toUpperCase()} file selected:`, file.name);
+<<<<<<< HEAD
      
+=======
+      
+>>>>>>> 9a9e27ed08a95d7898b845a2603fdfae14172655
       // Validate file type (TIFF files)
       const validExtensions = ['.tif', '.tiff', '.TIF', '.TIFF'];
       const isValid = validExtensions.some(ext => file.name.toLowerCase().endsWith(ext.toLowerCase()));
@@ -48,7 +52,11 @@ const VegetationAnalysisApp: React.FC = () => {
         setError(`Please select a valid TIFF file for ${type.toUpperCase()} band`);
         return;
       }
+<<<<<<< HEAD
      
+=======
+      
+>>>>>>> 9a9e27ed08a95d7898b845a2603fdfae14172655
       if (file.size > 100 * 1024 * 1024) { // 100MB limit
         setError('File size should be less than 100MB');
         return;
@@ -112,7 +120,11 @@ const VegetationAnalysisApp: React.FC = () => {
  
     setIsGeneratingReport(true);
     setError('');
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> 9a9e27ed08a95d7898b845a2603fdfae14172655
     try {
       console.log('📄 Generating report...');
      
@@ -124,9 +136,15 @@ const VegetationAnalysisApp: React.FC = () => {
         crop_type: cropType,
         additional_notes: additionalNotes,
       };
+<<<<<<< HEAD
  
       const reportResponse = await apiService.generateAndDownloadVegetationReport(reportData);
  
+=======
+
+      const reportResponse = await apiService.generateVegetationReport(reportData);
+
+>>>>>>> 9a9e27ed08a95d7898b845a2603fdfae14172655
       if (reportResponse.success) {
         // Download the report
         const blob = await apiService.downloadVegetationReport(result.session_id);
@@ -138,7 +156,11 @@ const VegetationAnalysisApp: React.FC = () => {
         a.click();
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
+<<<<<<< HEAD
        
+=======
+        
+>>>>>>> 9a9e27ed08a95d7898b845a2603fdfae14172655
  Alert( { variant: 'success', children: 'Report generated and downloaded successfully!' });
       } else {
         setError('Failed to generate report');
@@ -265,7 +287,11 @@ const VegetationAnalysisApp: React.FC = () => {
                     <strong>Error:</strong> {error}
                   </Alert>
                 )}
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> 9a9e27ed08a95d7898b845a2603fdfae14172655
                 <Tabs activeKey={activeTab} onSelect={(k) => k && setActiveTab(k)} className="mb-4 custom-tabs">
                   {/* Tab 1: Upload & Process */}
                   <Tab eventKey="upload" title={<><i className="fas fa-cloud-upload-alt me-2"></i>Upload & Process Images</>}>

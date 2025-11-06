@@ -1,14 +1,12 @@
+/* eslint-disable no-useless-escape */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { ApiError } from '../types';
 
 class ApiService {
-  downloadVegetationReport(session_id: string) {
-      throw new Error('Method not implemented.');
-  }
-  [x: string]: any;
   private api: AxiosInstance;
   public readonly baseURL: string;
+    downloadVegetationReport: any;
 
   constructor() {
     this.baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
@@ -19,7 +17,7 @@ class ApiService {
       headers: {
         'Content-Type': 'application/json',
       },
-      withCredentials: false, // Set to false for public endpoints
+      withCredentials: false,
     });
 
     this.setupInterceptors();
@@ -31,7 +29,6 @@ class ApiService {
         const token = this.getToken();
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
-          console.log('✅ Sending request with token:', token.substring(0, 30) + '...');
         }
 
         const sessionId = this.getSessionId();
@@ -110,9 +107,8 @@ class ApiService {
     }
   }
 
-  // Crop Prediction method
+  // Crop Prediction
   async predictCrop(data: any): Promise<any> {
-    console.log('🌾 Predict request');
     const response = await this.api.post('/api/crop/predict', data);
     return response.data;
   }
@@ -123,7 +119,6 @@ class ApiService {
     formData.append('file', imageFile, imageFile.name);
     formData.append('confidence_threshold', confidenceThreshold.toString());
 
-    console.log('📦 Bag detection request');
     const response = await this.api.post('/api/bag-detection/detect/public', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
       timeout: 60000,
@@ -151,13 +146,6 @@ class ApiService {
     }
 
     console.log('🛰️ Vegetation analysis request');
-    console.log('📸 Files:', {
-      rgb: rgbFile.name,
-      swir: swirFile.name,
-      nir: nirFile.name,
-      date: acquisitionDate,
-      location: location || 'Not specified'
-    });
 
     const response = await this.api.post('/api/vegetation/analyze', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
@@ -168,68 +156,30 @@ class ApiService {
     return response.data;
   }
 
-  // Get full plot URL (for images)
+  // Get full plot URL
   getPlotUrl(plotPath: string): string {
-    // plotPath comes like: /api/vegetation/plot/20251106_122717/NDVI.png
     const url = `${this.baseURL}${plotPath}`;
     console.log('📊 Plot URL:', url);
     return url;
   }
 
-  // Generate and Download vegetation report (combined operation)
-  async generateAndDownloadVegetationReport(reportData: any): Promise<void> {
-    console.log('📄 Generating and downloading report:', reportData);
+  // Generate vegetation report (returns path, not blob)
+  async generateVegetationReport(reportData: any): Promise<any> {
+    console.log('📄 Generating vegetation report:', reportData);
     
-    try {
-      // Make request to generate and receive PDF directly
-      const response = await this.api.post('/api/vegetation/report/generate', reportData, {
-        responseType: 'blob',
-        timeout: 60000,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      
-      console.log('✅ Report blob received:', response.data.size, 'bytes');
-      
-      // Check if response is actually a blob (PDF)
-      if (response.data.type === 'application/pdf') {
-        // Create download link
-        const blob = new Blob([response.data], { type: 'application/pdf' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `Vegetation_Report_${reportData.session_id}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        
-        // Cleanup
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-        
-        console.log('✅ Report downloaded successfully');
-      } else {
-        // Response might be JSON error
-        const text = await response.data.text();
-        const error = JSON.parse(text);
-        throw new Error(error.error || 'Failed to generate report');
-      }
-    } catch (error: any) {
-      console.error('❌ Report generation error:', error);
-      
-      // If error response is a blob, parse it
-      if (error.response?.data instanceof Blob) {
-        const text = await error.response.data.text();
-        try {
-          const errorData = JSON.parse(text);
-          throw new Error(errorData.error || 'Failed to generate report');
-        } catch (parseError) {
-          throw new Error(text || 'Failed to generate report');
-        }
-      }
-      
-      throw error;
-    }
+    const response = await this.api.post('/api/vegetation/report/generate', reportData, {
+      timeout: 60000,
+    });
+    
+    console.log('✅ Report generated:', response.data);
+    return response.data;
+  }
+
+  // Get full download URL for report
+  getReportDownloadUrl(pdfUrl: string): string {
+    const url = `${this.baseURL}${pdfUrl}`;
+    console.log('📥 Report download URL:', url);
+    return url;
   }
 
   // Generic methods
@@ -252,6 +202,45 @@ class ApiService {
     const response: AxiosResponse<T> = await this.api.delete(url, config);
     return response.data;
   }
+
+
+  // Video Analysis Methods
+  async getMediaVideos(): Promise<any> {
+    const response = await this.api.get('/api/video-analysis/videos/media');
+    return response.data;
+  }
+
+  async getResultVideos(): Promise<any> {
+    const response = await this.api.get('/api/video-analysis/videos/result');
+    return response.data;
+  }
+
+  async getVideoInfo(filename: string): Promise<any> {
+    const response = await this.api.get(`/api/video-analysis/video/media/${filename}`);
+    return response.data;
+  }
+
+  async analyzeVideo(filename: string): Promise<any> {
+    const response = await this.api.post('/api/video-analysis/analyze', { filename });
+    return response.data;
+  }
+
+  async getAnalysisResult(sessionId: string): Promise<any> {
+    const response = await this.api.get(`/api/video-analysis/result/${sessionId}`);
+    return response.data;
+  }
+
+  getVideoUrl(path: string): string {
+    // Remove 'static\' or 'static/' prefix and normalize path
+    const normalizedPath = path.replace(/^static[\\\/]/, '').replace(/\\/g, '/');
+    return `${this.baseURL}/${normalizedPath}`;
+  }
+
+  getVideoDownloadUrl(filename: string): string {
+    return `${this.baseURL}/api/video-analysis/result/${filename}?download=true`;
+  }
 }
+
+
 
 export default new ApiService();

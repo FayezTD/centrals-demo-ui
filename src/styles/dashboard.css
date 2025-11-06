@@ -240,3 +240,36 @@
     margin-bottom: 20px;
   }
 }
+
+/* External Demo Badge */
+.demo-card .external-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  z-index: 2;
+}
+
+.demo-card .external-badge i {
+  font-size: 0.7rem;
+}
+
+/* Info Alert for External Demos */
+.alert-info {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  border: 2px solid #60a5fa;
+  border-radius: 12px;
+}
+
+.alert-info strong {
+  color: #1e40af;
+}

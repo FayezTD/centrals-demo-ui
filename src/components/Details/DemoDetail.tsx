@@ -357,7 +357,6 @@ import VisionAnalyticsDetails from './VisionAnalyticsDetails';
 import VegetationIndexDetails from './VegetationIndexDetails';
 import GenericDemoDetails from './GenericDemoDetails';
 import LoadingSpinner from '../Common/LoadingSpinner';
-// import './DemoDetail.css';
 
 const DemoDetail: React.FC = () => {
   const { demoId } = useParams<{ demoId: string }>();
@@ -402,32 +401,44 @@ const DemoDetail: React.FC = () => {
 
     console.log('🚀 Launching demo:', demo.id);
     
-    // Navigate to the demo app based on demo ID
     switch (demo.id) {
+      // Internal React Apps
       case 'crop-recommendation':
-        console.log('➡️ Navigating to crop recommendation app');
         navigate('/demo-app/crop-recommendation');
         break;
       case 'bag-detection':
-        console.log('➡️ Navigating to bag detection app');
         navigate('/demo-app/bag-detection');
         break;
       case 'vegetation-index':
-        console.log('➡️ Navigating to vegetation analysis app');
         navigate('/demo-app/vegetation-analysis');
         break;
-      // Add more cases for other demos
-      case 'loyalty-assistant':
-      case 'nursing-system':
       case 'vision-analytics':
-      case 'healthcare-intelligence':
-      case 'predictive-maintenance':
-        alert(`Demo app for "${demo.title}" is under development. Coming soon!`);
+        navigate('/demo-app/vision-analytics');
         break;
+      
+      // External Streamlit Apps
+      case 'healthcare-intelligence':
+        window.open(import.meta.env.VITE_HEALTHCARE_DEMO_URL || 'https://healthcare-ai-demo.streamlit.app/', '_blank');
+        break;
+      case 'predictive-maintenance':
+        window.open(import.meta.env.VITE_PREDICTIVE_MAINTENANCE_DEMO_URL || 'https://predictive-maintenance-demo.streamlit.app/', '_blank');
+        break;
+      
+      // Coming Soon
+      case 'nursing-system':
+        alert(`Interactive demo for "${demo.title}" is coming soon!`);
+        break;
+      case 'loyalty-assistant':
+        alert(`Interactive demo for "${demo.title}" is coming soon!`);
+        break;
+      
       default:
-        console.warn('⚠️ Unknown demo ID:', demo.id);
-        alert(`Demo app for "${demo.title}" is under development.`);
+        alert(`Demo for "${demo.title}" is under development.`);
     }
+  };
+
+  const isExternalDemo = () => {
+    return demo && ['healthcare-intelligence', 'predictive-maintenance'].includes(demo.id);
   };
 
   const renderSpecificDetails = () => {
@@ -490,9 +501,17 @@ const DemoDetail: React.FC = () => {
             <Col lg={7} md={6}>
               <h1 className="detail-title mb-3">{demo?.title}</h1>
               <p className="detail-subtitle mb-3">{demo?.description}</p>
-              <Badge bg="light" text="dark" className="category-badge-large">
-                {demo?.category}
-              </Badge>
+              <div className="d-flex gap-2 flex-wrap">
+                <Badge bg="light" text="dark" className="category-badge-large">
+                  {demo?.category}
+                </Badge>
+                {isExternalDemo() && (
+                  <Badge bg="info" className="category-badge-large">
+                    <i className="fas fa-external-link-alt me-1"></i>
+                    External Demo
+                  </Badge>
+                )}
+              </div>
             </Col>
             <Col lg={4} md={4}>
               <div className="action-buttons">
@@ -502,8 +521,17 @@ const DemoDetail: React.FC = () => {
                   className="launch-btn w-100 mb-3"
                   onClick={handleLaunchDemo}
                 >
-                  <i className="fas fa-rocket me-2"></i>
-                  Launch Live Demo
+                  {isExternalDemo() ? (
+                    <>
+                      <i className="fas fa-external-link-alt me-2"></i>
+                      Open Demo in New Tab
+                    </>
+                  ) : (
+                    <>
+                      <i className="fas fa-rocket me-2"></i>
+                      Launch Interactive Demo
+                    </>
+                  )}
                 </Button>
                 <Button
                   variant="outline-light"
@@ -520,6 +548,14 @@ const DemoDetail: React.FC = () => {
       </div>
 
       <Container className="demo-detail-content py-5">
+        {isExternalDemo() && (
+          <Alert variant="info" className="mb-4">
+            <i className="fas fa-info-circle me-2"></i>
+            <strong>Note:</strong> This demo is hosted externally on Streamlit Cloud. 
+            It will open in a new browser tab.
+          </Alert>
+        )}
+
         <Row className="mb-5">
           <Col lg={12}>
             <Card className="tech-card">
@@ -576,26 +612,12 @@ const DemoDetail: React.FC = () => {
                   <Tab eventKey="architecture" title={<><i className="fas fa-sitemap me-2"></i>Architecture</>}>
                     <div className="tab-content-wrapper p-3">
                       <h5 className="mb-3">System Architecture</h5>
-                      <p className="lead-text">This demo implements a robust, scalable architecture designed for production environments.</p>
+                      <p className="lead-text">This demo implements a robust, scalable architecture.</p>
                       <ul className="architecture-list">
-                        <li><i className="fas fa-check text-success me-2"></i>Microservices-based architecture for modularity</li>
-                        <li><i className="fas fa-check text-success me-2"></i>RESTful API design for seamless integration</li>
-                        <li><i className="fas fa-check text-success me-2"></i>Cloud-native deployment with auto-scaling capabilities</li>
-                        <li><i className="fas fa-check text-success me-2"></i>Real-time data processing pipeline</li>
-                        <li><i className="fas fa-check text-success me-2"></i>Secure authentication and authorization layer</li>
-                      </ul>
-                    </div>
-                  </Tab>
-                  <Tab eventKey="use-cases" title={<><i className="fas fa-briefcase me-2"></i>Use Cases</>}>
-                    <div className="tab-content-wrapper p-3">
-                      <h5 className="mb-3">Industry Applications</h5>
-                      <p className="lead-text">This solution can be applied across multiple industries and scenarios:</p>
-                      <ul className="usecases-list">
-                        <li><i className="fas fa-check text-info me-2"></i>Enterprise-level business process automation</li>
-                        <li><i className="fas fa-check text-info me-2"></i>Quality control and assurance workflows</li>
-                        <li><i className="fas fa-check text-info me-2"></i>Data-driven decision making systems</li>
-                        <li><i className="fas fa-check text-info me-2"></i>Customer experience optimization</li>
-                        <li><i className="fas fa-check text-info me-2"></i>Operational efficiency improvements</li>
+                        <li><i className="fas fa-check text-success me-2"></i>Microservices architecture</li>
+                        <li><i className="fas fa-check text-success me-2"></i>RESTful API design</li>
+                        <li><i className="fas fa-check text-success me-2"></i>Cloud-native deployment</li>
+                        <li><i className="fas fa-check text-success me-2"></i>Real-time processing</li>
                       </ul>
                     </div>
                   </Tab>
@@ -606,25 +628,13 @@ const DemoDetail: React.FC = () => {
                         <Col md={6} className="mb-4">
                           <div className="benefit-box">
                             <h6><i className="fas fa-chart-line me-2 text-success"></i>Increased Efficiency</h6>
-                            <p>Automate repetitive tasks and reduce manual intervention by up to 80%</p>
+                            <p>Automate tasks and reduce manual intervention by up to 80%</p>
                           </div>
                         </Col>
                         <Col md={6} className="mb-4">
                           <div className="benefit-box">
                             <h6><i className="fas fa-dollar-sign me-2 text-success"></i>Cost Reduction</h6>
-                            <p>Significantly lower operational costs through intelligent automation</p>
-                          </div>
-                        </Col>
-                        <Col md={6} className="mb-4">
-                          <div className="benefit-box">
-                            <h6><i className="fas fa-clock me-2 text-success"></i>Time Savings</h6>
-                            <p>Reduce processing time from hours to minutes with AI acceleration</p>
-                          </div>
-                        </Col>
-                        <Col md={6} className="mb-4">
-                          <div className="benefit-box">
-                            <h6><i className="fas fa-bullseye me-2 text-success"></i>Enhanced Accuracy</h6>
-                            <p>Achieve 99%+ accuracy with advanced machine learning models</p>
+                            <p>Lower operational costs through intelligent automation</p>
                           </div>
                         </Col>
                       </Row>
@@ -639,16 +649,19 @@ const DemoDetail: React.FC = () => {
         <Row className="mt-5 mb-5">
           <Col className="text-center">
             <div className="action-cta p-5">
-              <h3 className="mb-3">Ready to explore this solution?</h3>
-              <p className="text-muted mb-4">Launch the interactive demo to experience the capabilities firsthand</p>
-              <Button
-                variant="success"
-                size="lg"
-                onClick={handleLaunchDemo}
-                className="cta-button"
-              >
-                <i className="fas fa-rocket me-2"></i>
-                Launch Interactive Demo Now
+              <h3 className="mb-3">Ready to explore?</h3>
+              <Button variant="success" size="lg" onClick={handleLaunchDemo} className="cta-button">
+                {isExternalDemo() ? (
+                  <>
+                    <i className="fas fa-external-link-alt me-2"></i>
+                    Open Demo in New Tab
+                  </>
+                ) : (
+                  <>
+                    <i className="fas fa-rocket me-2"></i>
+                    Launch Demo Now
+                  </>
+                )}
               </Button>
             </div>
           </Col>

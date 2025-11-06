@@ -1,0 +1,288 @@
+/* Vision Analytics App Styles */
+.vision-analytics-app {
+  min-height: 100vh;
+  background: #f5f7fa;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Header with Gradient */
+.app-header-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.app-title-white {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 0;
+}
+
+.app-subtitle-white {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.app-icon {
+  font-size: 2.5rem;
+}
+
+.app-logo {
+  max-height: 50px;
+  filter: brightness(0) invert(1);
+}
+
+/* Main Content */
+.app-content-gray {
+  background: #f5f7fa;
+  min-height: calc(100vh - 200px);
+}
+
+/* Section Cards */
+.selection-card {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  background: white;
+}
+
+.results-card {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  background: white;
+}
+
+.section-icon {
+  font-size: 1.8rem;
+}
+
+/* Selected Video Alert */
+.selected-video-alert {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  border: 2px solid #28a745;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+/* Video Cards */
+.video-card {
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  background: white;
+  overflow: hidden;
+}
+
+.video-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+  border-color: #667eea;
+}
+
+.video-card.selected {
+  border: 3px solid #28a745;
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+}
+
+.selected-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #28a745;
+  color: white;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  z-index: 2;
+}
+
+.video-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 15px;
+}
+
+.video-icon {
+  font-size: 2.5rem;
+  color: white;
+}
+
+.video-filename {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e293b;
+  text-align: center;
+  margin-bottom: 10px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-meta {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.video-thumbnail {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+/* Run Prediction Button */
+.run-prediction-btn {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  border: none;
+  font-weight: 700;
+  padding: 15px 50px;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+  transition: all 0.3s ease;
+}
+
+.run-prediction-btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(40, 167, 69, 0.5);
+}
+
+.run-prediction-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Video Display Cards */
+.video-display-card {
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  height: 100%;
+}
+
+.video-header {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 12px 20px;
+}
+
+.result-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+/* Metrics Card */
+.metrics-card {
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.metrics-card .card-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 700;
+  padding: 15px 20px;
+}
+
+.metric-box {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 2px solid #dee2e6;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.metric-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.metric-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #667eea;
+  margin-bottom: 5px;
+}
+
+.metric-label {
+  font-size: 0.85rem;
+  color: #64748b;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Footer */
+.app-footer-dark {
+  background: #1e293b;
+  color: white;
+  padding: 25px 0;
+  margin-top: 40px;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+  .app-title-white {
+    font-size: 1.5rem;
+  }
+
+  .app-subtitle-white {
+    font-size: 0.85rem;
+  }
+
+  .video-card {
+    margin-bottom: 15px;
+  }
+
+  .run-prediction-btn {
+    padding: 12px 40px;
+    font-size: 1rem;
+  }
+
+  .metric-value {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-content-gray {
+    padding: 20px 10px !important;
+  }
+
+  .selection-card .card-body,
+  .results-card .card-body {
+    padding: 20px 15px !important;
+  }
+
+  .video-filename {
+    font-size: 0.9rem;
+    min-height: 40px;
+  }
+
+  .metric-box {
+    padding: 15px;
+  }
+}

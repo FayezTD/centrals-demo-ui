@@ -194,3 +194,53 @@ export interface VegetationReportResponse {
     download_url: string;
   };
 }
+
+
+// Video Analysis Types
+export interface VideoFile {
+  filename: string;
+  path: string;
+  size_mb: number;
+  modified: string;
+  size_bytes?: number;
+  type?: string;
+}
+
+export interface VideoListResponse {
+  success: boolean;
+  count: number;
+  videos: VideoFile[];
+}
+
+export interface VideoAnalysisRequest {
+  filename: string;
+}
+
+export interface VideoAnalysisResponse {
+  success: boolean;
+  status: string;
+  message: string;
+  session_id: string;
+  filename: string;
+}
+
+export interface VideoResultMetrics {
+  frames_processed: number;
+  objects_detected: number;
+  confidence: number;
+  quality_score: number;
+  detections_per_frame: number;
+  process_time_seconds: number;
+}
+
+export interface VideoResultResponse {
+  success: boolean;
+  session_id: string;
+  filename: string;
+  status: string;
+  started_at: string;
+  completed_at: string;
+  result_file: string;
+  result_path: string;
+  metrics: VideoResultMetrics;
+}
