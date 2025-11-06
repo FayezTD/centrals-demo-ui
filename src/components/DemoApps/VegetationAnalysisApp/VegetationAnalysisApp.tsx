@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useRef } from 'react';
 import { Container, Row, Col, Form, Button, Card, Alert, Spinner, Badge, Table, Tabs, Tab } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -7,80 +7,79 @@ import { useAuth } from '../../../contexts/AuthContext';
 import apiService from '../../../services/apiService';
 import { VegetationAnalysisResponse } from '../../../types';
 import './VegetationAnalysisApp.css';
-
+ 
 const VegetationAnalysisApp: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  
+ 
   const rgbInputRef = useRef<HTMLInputElement>(null);
   const swirInputRef = useRef<HTMLInputElement>(null);
   const nirInputRef = useRef<HTMLInputElement>(null);
-  
+ 
   const [rgbFile, setRgbFile] = useState<File | null>(null);
   const [swirFile, setSwirFile] = useState<File | null>(null);
   const [nirFile, setNirFile] = useState<File | null>(null);
   const [acquisitionDate, setAcquisitionDate] = useState<string>('');
   const [location, setLocation] = useState<string>('');
-  
+ 
   const [result, setResult] = useState<VegetationAnalysisResponse['data'] | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const [activeTab, setActiveTab] = useState('upload');
-  
+ 
   // Report form data
   const [reportTitle, setReportTitle] = useState('Vegetation Health Analysis Report');
   const [farmerName, setFarmerName] = useState('');
   const [fieldSize, setFieldSize] = useState('');
   const [cropType, setCropType] = useState('');
   const [additionalNotes, setAdditionalNotes] = useState('');
-
+ 
   const handleFileSelect = (type: 'rgb' | 'swir' | 'nir', e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       console.log(`📁 ${type.toUpperCase()} file selected:`, file.name);
-      
+     
+      // Validate file type (TIFF files)
       const validExtensions = ['.tif', '.tiff', '.TIF', '.TIFF'];
       const isValid = validExtensions.some(ext => file.name.toLowerCase().endsWith(ext.toLowerCase()));
-      
+     
       if (!isValid) {
         setError(`Please select a valid TIFF file for ${type.toUpperCase()} band`);
         return;
       }
-      
-      if (file.size > 50 * 1024 * 1024) {
-        setError('File size should be less than 50MB');
+     
+      if (file.size > 100 * 1024 * 1024) { // 100MB limit
+        setError('File size should be less than 100MB');
         return;
       }
-
+ 
       if (type === 'rgb') setRgbFile(file);
       else if (type === 'swir') setSwirFile(file);
       else if (type === 'nir') setNirFile(file);
-      
+     
       setError('');
     }
   };
-
+ 
   const handleProcessImages = async () => {
     if (!rgbFile || !swirFile || !nirFile) {
       setError('Please upload all three required images (RGB, SWIR, NIR)');
       return;
     }
-    
+   
     if (!acquisitionDate) {
       setError('Please select acquisition date');
       return;
     }
-
+ 
     setIsProcessing(true);
     setError('');
-    setSuccess('');
     setResult(null);
-
+ 
     try {
       console.log('🚀 Starting vegetation analysis...');
-      
+     
       const response: VegetationAnalysisResponse = await apiService.analyzeVegetation(
         rgbFile,
         swirFile,
@@ -88,13 +87,12 @@ const VegetationAnalysisApp: React.FC = () => {
         acquisitionDate,
         location
       );
-
+ 
       console.log('✅ Analysis complete:', response);
-
+ 
       if (response.success && response.data) {
         setResult(response.data);
         setActiveTab('results');
-        setSuccess('Analysis completed successfully!');
       } else {
         setError(response.message || 'Analysis failed');
       }
@@ -105,20 +103,19 @@ const VegetationAnalysisApp: React.FC = () => {
       setIsProcessing(false);
     }
   };
-
+ 
   const handleGenerateReport = async () => {
     if (!result) {
       setError('No analysis results available. Please process images first.');
       return;
     }
-
+ 
     setIsGeneratingReport(true);
     setError('');
-    setSuccess('');
-
+ 
     try {
       console.log('📄 Generating report...');
-      
+     
       const reportData = {
         session_id: result.session_id,
         report_title: reportTitle,
@@ -127,40 +124,33 @@ const VegetationAnalysisApp: React.FC = () => {
         crop_type: cropType,
         additional_notes: additionalNotes,
       };
-
-      const reportResponse = await apiService.generateVegetationReport(reportData);
-      console.log('📄 Report response:', reportResponse);
-
+ 
+      const reportResponse = await apiService.generateAndDownloadVegetationReport(reportData);
+ 
       if (reportResponse.success) {
-        console.log('📥 Downloading report...');
-        
-        // Download the report blob
+        // Download the report
         const blob = await apiService.downloadVegetationReport(result.session_id);
-        
-        // Create download link
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         a.download = `vegetation_report_${result.session_id}.pdf`;
         document.body.appendChild(a);
         a.click();
-        
-        // Cleanup
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
-        
-        setSuccess('Report generated and downloaded successfully!');
+       
+ Alert( { variant: 'success', children: 'Report generated and downloaded successfully!' });
       } else {
-        setError(reportResponse.message || 'Failed to generate report');
+        setError('Failed to generate report');
       }
     } catch (err: any) {
       console.error('❌ Report generation error:', err);
-      setError(err.message || 'Failed to generate report. Please try again.');
+      setError(err.message || 'Failed to generate report.');
     } finally {
       setIsGeneratingReport(false);
     }
   };
-
+ 
   const handleReset = () => {
     setRgbFile(null);
     setSwirFile(null);
@@ -169,14 +159,13 @@ const VegetationAnalysisApp: React.FC = () => {
     setLocation('');
     setResult(null);
     setError('');
-    setSuccess('');
     setActiveTab('upload');
-    
+   
     if (rgbInputRef.current) rgbInputRef.current.value = '';
     if (swirInputRef.current) swirInputRef.current.value = '';
     if (nirInputRef.current) nirInputRef.current.value = '';
   };
-
+ 
   const renderIndexCard = (indexName: string, data: any) => {
     const colors: any = {
       NDVI: 'success',
@@ -186,7 +175,7 @@ const VegetationAnalysisApp: React.FC = () => {
       CWSI: 'danger',
       EVI: 'secondary',
     };
-
+ 
     return (
       <Col lg={6} xl={4} className="mb-3" key={indexName}>
         <Card className="index-stat-card">
@@ -220,7 +209,7 @@ const VegetationAnalysisApp: React.FC = () => {
       </Col>
     );
   };
-
+ 
   return (
     <div className="vegetation-analysis-app">
       {/* Header */}
@@ -228,9 +217,9 @@ const VegetationAnalysisApp: React.FC = () => {
         <Container fluid>
           <Row className="align-items-center">
             <Col lg={2} md={2}>
-              <img 
-                src="https://thirdeyedata.ai/wp-content/uploads/2023/06/ThirdEye-Data-Logo.png" 
-                alt="ThirdEye Data Logo" 
+              <img
+                src="https://thirdeyedata.ai/wp-content/uploads/2023/06/ThirdEye-Data-Logo.png"
+                alt="ThirdEye Data Logo"
                 className="app-logo"
               />
             </Col>
@@ -252,7 +241,7 @@ const VegetationAnalysisApp: React.FC = () => {
           </Row>
         </Container>
       </div>
-
+ 
       {/* Main Content */}
       <Container fluid className="app-content">
         <Row className="justify-content-center">
@@ -265,25 +254,18 @@ const VegetationAnalysisApp: React.FC = () => {
                     About This System
                   </h5>
                   <p className="mb-0">
-                    Upload Sentinel-2 satellite images to calculate various vegetation indices like NDVI, NDMI, NDWI, 
+                    Upload Sentinel-2 satellite images to calculate various vegetation indices like NDVI, NDMI, NDWI,
                     MSAVI, CWSI, and EVI to assess crop health, moisture levels, and stress conditions.
                   </p>
                 </div>
-
+ 
                 {error && (
                   <Alert variant="danger" dismissible onClose={() => setError('')}>
                     <i className="fas fa-exclamation-circle me-2"></i>
                     <strong>Error:</strong> {error}
                   </Alert>
                 )}
-
-                {success && (
-                  <Alert variant="success" dismissible onClose={() => setSuccess('')}>
-                    <i className="fas fa-check-circle me-2"></i>
-                    <strong>Success:</strong> {success}
-                  </Alert>
-                )}
-
+ 
                 <Tabs activeKey={activeTab} onSelect={(k) => k && setActiveTab(k)} className="mb-4 custom-tabs">
                   {/* Tab 1: Upload & Process */}
                   <Tab eventKey="upload" title={<><i className="fas fa-cloud-upload-alt me-2"></i>Upload & Process Images</>}>
@@ -294,11 +276,11 @@ const VegetationAnalysisApp: React.FC = () => {
                             <i className="fas fa-file-upload me-2"></i>
                             Upload Satellite Images
                           </h5>
-                          
+                         
                           <p className="text-muted mb-4">
                             Please upload three Sentinel-2 satellite images in the following order:
                           </p>
-
+ 
                           {/* RGB File Upload */}
                           <Form.Group className="mb-4">
                             <Form.Label className="fw-bold">
@@ -318,7 +300,7 @@ const VegetationAnalysisApp: React.FC = () => {
                                 <div className="file-placeholder">
                                   <i className="fas fa-cloud-upload-alt fa-2x mb-2"></i>
                                   <p className="mb-1">Click to upload RGB image</p>
-                                  <small className="text-muted">TIFF format • Max 50MB</small>
+                                  <small className="text-muted">TIFF format • Max 100MB</small>
                                 </div>
                               )}
                               <input
@@ -330,7 +312,7 @@ const VegetationAnalysisApp: React.FC = () => {
                               />
                             </div>
                           </Form.Group>
-
+ 
                           {/* SWIR File Upload */}
                           <Form.Group className="mb-4">
                             <Form.Label className="fw-bold">
@@ -350,7 +332,7 @@ const VegetationAnalysisApp: React.FC = () => {
                                 <div className="file-placeholder">
                                   <i className="fas fa-cloud-upload-alt fa-2x mb-2"></i>
                                   <p className="mb-1">Click to upload SWIR image</p>
-                                  <small className="text-muted">TIFF format • Max 50MB</small>
+                                  <small className="text-muted">TIFF format • Max 100MB</small>
                                 </div>
                               )}
                               <input
@@ -362,7 +344,7 @@ const VegetationAnalysisApp: React.FC = () => {
                               />
                             </div>
                           </Form.Group>
-
+ 
                           {/* NIR File Upload */}
                           <Form.Group className="mb-4">
                             <Form.Label className="fw-bold">
@@ -382,7 +364,7 @@ const VegetationAnalysisApp: React.FC = () => {
                                 <div className="file-placeholder">
                                   <i className="fas fa-cloud-upload-alt fa-2x mb-2"></i>
                                   <p className="mb-1">Click to upload NIR image</p>
-                                  <small className="text-muted">TIFF format • Max 50MB</small>
+                                  <small className="text-muted">TIFF format • Max 100MB</small>
                                 </div>
                               )}
                               <input
@@ -395,7 +377,7 @@ const VegetationAnalysisApp: React.FC = () => {
                             </div>
                           </Form.Group>
                         </Col>
-
+ 
                         <Col lg={4}>
                           <Card className="parameters-card">
                             <Card.Body>
@@ -403,7 +385,7 @@ const VegetationAnalysisApp: React.FC = () => {
                                 <i className="fas fa-cog me-2"></i>
                                 Image Parameters
                               </h6>
-
+ 
                               <Form.Group className="mb-3">
                                 <Form.Label>Image Acquisition Date *</Form.Label>
                                 <Form.Control
@@ -415,7 +397,7 @@ const VegetationAnalysisApp: React.FC = () => {
                                 />
                                 <Form.Text>Format: YYYY-MM-DD</Form.Text>
                               </Form.Group>
-
+ 
                               <Form.Group className="mb-4">
                                 <Form.Label>Field/Location Name (Optional)</Form.Label>
                                 <Form.Control
@@ -425,7 +407,7 @@ const VegetationAnalysisApp: React.FC = () => {
                                   onChange={(e) => setLocation(e.target.value)}
                                 />
                               </Form.Group>
-
+ 
                               <div className="d-grid gap-2">
                                 <Button
                                   variant="success"
@@ -460,10 +442,10 @@ const VegetationAnalysisApp: React.FC = () => {
                       </Row>
                     </div>
                   </Tab>
-
+ 
                   {/* Tab 2: View Results */}
-                  <Tab 
-                    eventKey="results" 
+                  <Tab
+                    eventKey="results"
                     title={<><i className="fas fa-chart-line me-2"></i>View Results</>}
                     disabled={!result}
                   >
@@ -488,7 +470,7 @@ const VegetationAnalysisApp: React.FC = () => {
                               </Col>
                             </Row>
                           </div>
-
+ 
                           {/* Overview Plot */}
                           <Card className="mb-4">
                             <Card.Header>
@@ -499,29 +481,25 @@ const VegetationAnalysisApp: React.FC = () => {
                             </Card.Header>
                             <Card.Body className="p-2">
                               <img
-                                src={apiService.getPlotUrl(result.plots.overview)}
+                                src={`${apiService['baseURL']}${result.plots.overview}`}
                                 alt="All Vegetation Indices"
                                 className="w-100"
                                 style={{ maxHeight: '600px', objectFit: 'contain' }}
-                                onError={(e) => {
-                                  console.error('Failed to load overview image');
-                                  e.currentTarget.style.display = 'none';
-                                }}
                               />
                             </Card.Body>
                           </Card>
-
+ 
                           {/* Individual Index Statistics */}
                           <h6 className="mb-3">
                             <i className="fas fa-chart-bar me-2"></i>
                             Index Statistics
                           </h6>
                           <Row>
-                            {Object.entries(result.indices).map(([key, value]) => 
+                            {Object.entries(result.indices).map(([key, value]) =>
                               renderIndexCard(key, value)
                             )}
                           </Row>
-
+ 
                           {/* Individual Plots in 3x2 Grid */}
                           <h6 className="mb-3 mt-4">
                             <i className="fas fa-th me-2"></i>
@@ -536,13 +514,9 @@ const VegetationAnalysisApp: React.FC = () => {
                                   </Card.Header>
                                   <Card.Body className="p-2">
                                     <img
-                                      src={apiService.getPlotUrl(result.plots[indexName as keyof typeof result.plots])}
+                                      src={`${apiService['baseURL']}${result.plots[indexName as keyof typeof result.plots]}`}
                                       alt={`${indexName} Plot`}
                                       className="w-100"
-                                      onError={(e) => {
-                                        console.error(`Failed to load ${indexName} image`);
-                                        e.currentTarget.alt = `Failed to load ${indexName} plot`;
-                                      }}
                                     />
                                   </Card.Body>
                                 </Card>
@@ -558,10 +532,10 @@ const VegetationAnalysisApp: React.FC = () => {
                       )}
                     </div>
                   </Tab>
-
+ 
                   {/* Tab 3: Download Report */}
-                  <Tab 
-                    eventKey="report" 
+                  <Tab
+                    eventKey="report"
                     title={<><i className="fas fa-file-pdf me-2"></i>Download Report</>}
                     disabled={!result}
                   >
@@ -573,7 +547,7 @@ const VegetationAnalysisApp: React.FC = () => {
                               <i className="fas fa-file-alt me-2"></i>
                               Generate and Download Report
                             </h5>
-
+ 
                             <Form>
                               <Form.Group className="mb-3">
                                 <Form.Label>Report Title</Form.Label>
@@ -583,7 +557,7 @@ const VegetationAnalysisApp: React.FC = () => {
                                   onChange={(e) => setReportTitle(e.target.value)}
                                 />
                               </Form.Group>
-
+ 
                               <Row>
                                 <Col md={6}>
                                   <Form.Group className="mb-3">
@@ -608,7 +582,7 @@ const VegetationAnalysisApp: React.FC = () => {
                                   </Form.Group>
                                 </Col>
                               </Row>
-
+ 
                               <Form.Group className="mb-3">
                                 <Form.Label>Crop Type (Optional)</Form.Label>
                                 <Form.Control
@@ -618,7 +592,7 @@ const VegetationAnalysisApp: React.FC = () => {
                                   onChange={(e) => setCropType(e.target.value)}
                                 />
                               </Form.Group>
-
+ 
                               <Form.Group className="mb-4">
                                 <Form.Label>Additional Notes (Optional)</Form.Label>
                                 <Form.Control
@@ -629,7 +603,7 @@ const VegetationAnalysisApp: React.FC = () => {
                                   onChange={(e) => setAdditionalNotes(e.target.value)}
                                 />
                               </Form.Group>
-
+ 
                               <Button
                                 variant="primary"
                                 size="lg"
@@ -650,7 +624,7 @@ const VegetationAnalysisApp: React.FC = () => {
                               </Button>
                             </Form>
                           </Col>
-
+ 
                           <Col lg={4}>
                             <Card className="info-card">
                               <Card.Body>
@@ -682,7 +656,7 @@ const VegetationAnalysisApp: React.FC = () => {
           </Col>
         </Row>
       </Container>
-
+ 
       {/* Footer */}
       <footer className="app-footer">
         <Container>
@@ -696,5 +670,5 @@ const VegetationAnalysisApp: React.FC = () => {
     </div>
   );
 };
-
+ 
 export default VegetationAnalysisApp;
